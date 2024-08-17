@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"task-tracker.dev/tasks"
 )
@@ -23,20 +24,55 @@ const (
 	ADD_COMMAND              Command = "add"
 	DEL_COMMAND              Command = "delete"
 	LIST_COMMAND             Command = "list"
-	MARK_DONE_COMMAND        Command = "mark_done"
-	MARK_IN_PROGRESS_COMMAND Command = "mark_in_progress"
+	MARK_DONE_COMMAND        Command = "mark-done"
+	MARK_IN_PROGRESS_COMMAND Command = "mark-in-progress"
+	UPDATE_COMMAND           Command = "update"
 )
 
 func (c *CommandInfo) handleCommand(args []string) {
 	if len(args) < c.minArgs || len(args) > c.maxArgs {
-		fmt.Fprintf(os.Stderr, "Invalid number of arguments. Usage: %s\n", c.Usage)
+		fmt.Fprintln(os.Stderr, "Invalid number of arguments.")
+		fmt.Fprintf(os.Stderr, "Usage: \n \t%s\n", c.Usage)
+		fmt.Fprintf(os.Stderr, "Example: \n \t%s\n", c.Example)
 		return
 	}
 
 	switch c.Name {
 	case LIST_COMMAND:
 		tasks.ListTasks()
-
+	case ADD_COMMAND:
+		tasks.AddTask(args[0])
+	case UPDATE_COMMAND:
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Invalid task ID.")
+			printCommandHelp(UPDATE_COMMAND)
+			return
+		}
+		tasks.UpdateTask(taskID, args[1])
+	case MARK_DONE_COMMAND:
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Invalid task ID.")
+			return
+		}
+		tasks.MarkTaskAsDone(taskID)
+	case MARK_IN_PROGRESS_COMMAND:
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Invalid task ID.")
+			return
+		}
+		tasks.MarkTaskAsInProgress(taskID)
+	case DEL_COMMAND:
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Invalid task ID.")
+			return
+		}
+		tasks.DeleteTask(taskID)
+	default:
+		fmt.Fprintln(os.Stderr, "Command not implemented yet.")
 	}
 }
 
@@ -56,6 +92,14 @@ var CommandsMap = map[Command]CommandInfo{
 		maxArgs:     1,
 		Usage:       "todo add <task>",
 		Example:     "todo add 'Buy milk'",
+	},
+	UPDATE_COMMAND: {
+		Name:        UPDATE_COMMAND,
+		Description: "Updates a task.",
+		minArgs:     2,
+		maxArgs:     2,
+		Usage:       "todo update <task_id> <new_task>",
+		Example:     "todo update 1 'Buy milk'",
 	},
 	DEL_COMMAND: {
 		Name:        DEL_COMMAND,
