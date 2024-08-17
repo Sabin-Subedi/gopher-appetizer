@@ -3,6 +3,7 @@ package tasks
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 type TaskStatus string
@@ -14,9 +15,11 @@ const (
 )
 
 type Task struct {
-	ID     int        `json:"id"`
-	Task   string     `json:"task"`
-	Status TaskStatus `json:"status"`
+	ID        int        `json:"id"`
+	Task      string     `json:"task"`
+	Status    TaskStatus `json:"status"`
+	CreatedAt string     `json:"created_at"`
+	UpdateAt  string     `json:"updated_at"`
 }
 
 var tasks = readTaskFromJSONFile()
@@ -30,9 +33,11 @@ func ListTasks() {
 
 func AddTask(task string) {
 	newTask := Task{
-		ID:     tasks[len(tasks)-1].ID + 1,
-		Task:   task,
-		Status: TASK_STATUS_TODO,
+		ID:        tasks[len(tasks)-1].ID + 1,
+		Task:      task,
+		Status:    TASK_STATUS_TODO,
+		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		UpdateAt:  time.Now().Format("2006-01-02 15:04:05"),
 	}
 	tasks = append(tasks, newTask)
 
@@ -96,6 +101,7 @@ func UpdateTask(taskID int, newTask string) {
 	}
 
 	task.Task = newTask
+	task.UpdateAt = time.Now().Format("2006-01-02 15:04:05")
 	tasks[index] = *task
 	writeTaskToJSONFile(tasks)
 	fmt.Printf("Task updated successfully. (ID:%d)\n", task.ID)
