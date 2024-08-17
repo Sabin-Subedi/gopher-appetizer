@@ -10,5 +10,4 @@
 - [Github User Activity](https://roadmap.sh/projects/github-user-activity)
 
 ## Appendix
-
-All of the project are inspired from [Roadmap.sh](https://roadmap.sh) Go Roadmap project section.
+Inspired by the Go Roadmap on [Roadmap.sh](https://roadmap.sh), this repo features my own interpretations of the projects built with Go.
