@@ -1,8 +1,7 @@
 
 # Gopher Appetizer
 
- Appetizer projects that i build while learning go fundamentals.
-
+Bite-sized Go projects for learning fundamentals.
 
 ## Projects
 
