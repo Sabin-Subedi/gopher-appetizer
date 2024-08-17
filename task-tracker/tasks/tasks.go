@@ -30,7 +30,7 @@ func ListTasks() {
 
 func AddTask(task string) {
 	newTask := Task{
-		ID:     len(tasks) + 1,
+		ID:     tasks[len(tasks)-1].ID + 1,
 		Task:   task,
 		Status: TASK_STATUS_TODO,
 	}
@@ -51,25 +51,27 @@ func FindTaskByID(taskID int) (*Task, int) {
 }
 
 func MarkTaskAsDone(taskID int) {
-	task, _ := FindTaskByID(taskID)
+	task, index := FindTaskByID(taskID)
 	if task == nil {
 		fmt.Fprintln(os.Stderr, "Task not found.")
 		return
 	}
 
 	task.Status = TASK_STATUS_DONE
+	tasks[index] = *task
 	writeTaskToJSONFile(tasks)
 	fmt.Println("Hooray 🎉! You completed the task.")
 }
 
 func MarkTaskAsInProgress(taskID int) {
-	task, _ := FindTaskByID(taskID)
+	task, index := FindTaskByID(taskID)
 	if task == nil {
 		fmt.Fprintln(os.Stderr, "Task not found.")
 		return
 	}
 
 	task.Status = TASK_STATUS_IN_PROGRESS
+	tasks[index] = *task
 	writeTaskToJSONFile(tasks)
 	fmt.Printf("Task marked as in progress. (ID:%d)\n", task.ID)
 }
@@ -87,13 +89,14 @@ func DeleteTask(taskID int) {
 }
 
 func UpdateTask(taskID int, newTask string) {
-	task, _ := FindTaskByID(taskID)
+	task, index := FindTaskByID(taskID)
 	if task == nil {
 		fmt.Fprintln(os.Stderr, "Task not found.")
 		return
 	}
 
 	task.Task = newTask
+	tasks[index] = *task
 	writeTaskToJSONFile(tasks)
 	fmt.Printf("Task updated successfully. (ID:%d)\n", task.ID)
 }
