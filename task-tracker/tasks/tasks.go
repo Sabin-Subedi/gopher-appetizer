@@ -32,8 +32,13 @@ func ListTasks() {
 }
 
 func AddTask(task string) {
+	lastTaskID := 0
+	if len(tasks) > 0 {
+		lastTaskID = tasks[len(tasks)-1].ID
+	}
+
 	newTask := Task{
-		ID:        tasks[len(tasks)-1].ID + 1,
+		ID:        lastTaskID + 1,
 		Task:      task,
 		Status:    TASK_STATUS_TODO,
 		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
